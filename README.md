@@ -54,7 +54,7 @@ El proyecto surge de la descomposición modular de la operativa diaria de un aer
 ```mermaid
 flowchart TD
     subgraph UI["AeroGestion.c (Interfaz y Menú)"]
-        M[Menú Principal CLI]
+        M[Menú Principal]
     end
 
     subgraph TADs["Gestion.h (Estructuras Dinámicas)"]
