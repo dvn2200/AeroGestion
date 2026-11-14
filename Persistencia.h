@@ -130,7 +130,7 @@ void corteDeControlAerolineas() {
             fread(&reg, sizeof(tVuelo), 1, archivo);
         }
 
-        printf("Aerolinea: %-16s | Vuelos: %d | Pasajeros: %d\n",
+        printf("Aerolinea: %-s | Vuelos: %d | Pasajeros: %d\n",
                aerolineaAnt, cantVuelos, pasajerosAerolinea);
         totalAerolineas++;
         totalPasajeros += pasajerosAerolinea;

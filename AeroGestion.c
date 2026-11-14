@@ -1,11 +1,12 @@
 /*
 Sistema de gestión aeroportuaria (AeroGestión).
 Permite administrar líneas aéreas, vuelos, destinos, duración y aforo.
-Gestiona reservas de pasajeros en orden de llegada (cola FIFO), cancelaciones y liberaciones de cupos.
+Gestiona reservas de pasajeros en orden de llegada, cancelaciones y liberaciones de cupos.
 Modela la red de aeropuertos y conexiones mediante una red de rutas ponderada.
 Persistencia en archivos binarios (.dat) y corte de control agrupado por aerolínea.
 
-objetivo: Desarrollar un sistema de gestión de vuelos, reservas de pasajeros y rutas aeroportuarias aplicando estructuras de datos dinámicas, red de rutas, algoritmos de búsqueda, ordenamiento y persistencia con corte de control.
+objetivo: Desarrollar un sistema de gestión de vuelos, reservas de pasajeros y rutas aeroportuarias aplicando estructuras de datos dinámicas, red de rutas, algoritmos de búsqueda, 
+ordenamiento y persistencia con corte de control.
 
 nombre: AeroGestion.c
 
