@@ -1,0 +1,7 @@
+output/
+*.exe
+*.dat
+*.txt
+.vscode/
+*.json
+
