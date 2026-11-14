@@ -46,6 +46,7 @@ El proyecto surge de la descomposición modular de la operativa diaria de un aer
 | **Algoritmos de Ordenamiento** | Listados de vuelos y destinos | Organización de los vuelos según criterios de horario, destino o aerolínea. |
 | **TADs (Tipos Abstractos)** | Modelado de Entidades | Modularización y encapsulamiento del comportamiento de vuelos, reservas y rutas. |
 | **Persistencia Binaria (.dat)** | Archivos del sistema | Almacenamiento confiable de vuelos y reservas al iniciar y modificar datos. |
+| **Persistencia de Texto (.txt)** | Red de rutas (grafo) | Configuración e inspección de rutas y distancias entre aeropuertos en texto plano. |
 
 ---
 
@@ -76,10 +77,14 @@ flowchart TD
         PROM["Promoción Automática FIFO"]
     end
 
-    subgraph Persist["Persistencia.h (Archivos Binarios)"]
+    subgraph PersistBin["Persistencia.h (Archivos Binarios)"]
         DAT1[("vuelos.dat")]
         DAT2[("reservas.dat")]
         CORTE["Corte de Control por Aerolínea"]
+    end
+
+    subgraph PersistTxt["PersistenciaRutas.h (Archivos de Texto)"]
+        TXT1[("rutas.txt")]
     end
 
     M -->|1. Registrar Vuelo| LV
@@ -98,6 +103,8 @@ flowchart TD
     CANC -.->|Desencola Espera| PROM
     PROM -.->|Ocupa Vacante| CF
 
+    M -->|7. Consultar / Agregar Rutas| G
+
     LV -->|Auto-guardado| DAT1
     CF -->|Auto-guardado| DAT2
     CE -->|Auto-guardado| DAT2
@@ -107,6 +114,9 @@ flowchart TD
     DAT2 -->|Auto-carga al inicio| CE
 
     DAT1 -->|8. Informe Agrupado| CORTE
+
+    G -->|Auto-guardado al salir| TXT1
+    TXT1 -->|Auto-carga al inicio| G
 ```
 
 ---

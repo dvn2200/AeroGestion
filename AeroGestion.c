@@ -17,6 +17,8 @@ typedef tRedRutas redRutas;
 estrategia: 
     inicializarVuelos
     inicializarRutas
+    cargarDatosBinarios
+    cargarRutasTexto
     menu:
         1. cargarNuevoVuelo
         2. menuOrdenarYMostrarVuelos
@@ -27,6 +29,7 @@ estrategia:
         7. menuDeRutas
         8. corteDeControlAerolineas
     guardarDatosBinarios
+    guardarRutasTexto
     liberarListaVuelos
     liberarCola[de espera]
     liberarCola[Confirmadas]
@@ -55,10 +58,12 @@ int main() {
     inicializar(&listaVuelos, &colaConfirmadas, &colaEspera);
     inicializarRedRutas(&redRutas);
     cargarDatosBinarios(&listaVuelos, &colaConfirmadas, &colaEspera, &redRutas);
+    cargarRutasTexto(&redRutas);
 
     menu(&listaVuelos, &colaConfirmadas, &colaEspera, &redRutas, &idReserva);
 
     guardarDatosBinarios(listaVuelos, colaConfirmadas, colaEspera);
+    guardarRutasTexto(redRutas);
     liberarListaVuelos(&listaVuelos);
     liberarCola(&colaConfirmadas);
     liberarCola(&colaEspera);

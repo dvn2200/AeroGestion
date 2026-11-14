@@ -27,7 +27,7 @@ nombre de funciones:
     corteDeControlAerolineas();
 */
 
-#include "Negocioyop.h"
+#include "PersistenciaRutas.h"
 
 #define TITULO_CORTE "\n*** CORTE DE CONTROL POR AEROLINEA ***\n"
 
