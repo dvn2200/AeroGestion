@@ -54,42 +54,77 @@ El proyecto surge de la descomposición modular de la operativa diaria de un aer
 
 ## Arquitectura y Flujo del Sistema
 
-El sistema sigue una arquitectura modular en capas donde cada cabecera encapsula una responsabilidad específica (`AeroGestion.c` → `Persistencia.h` → `PersistenciaRutas.h` → `Negocioyop.h` → `topologia.h` → `Gestion.h`):
+El sistema se organiza en capas modulares jerárquicas (`AeroGestion.c` → `Persistencia.h` → `PersistenciaRutas.h` → `Negocioyop.h` → `topologia.h` → `Gestion.h`), integrando un ciclo de ejecución en tres etapas:
+- **Inicio (`main`):** Inicializa las estructuras en RAM (`inicializar()`, `inicializarRedRutas()`) y restaura el estado desde `vuelos.dat`, `reservas.dat` y `rutas.txt`.
+- **Operación (`menu`):** Procesa las opciones `1` a `8` entre la lógica de negocio, la red de rutas y los TADs dinámicos, auto-guardando los `.dat` ante cambios en vuelos o reservas (`1`, `4`, `5`).
+- **Cierre (`0. Salir`):** Ejecuta el guardado final de binarios (`.dat`) y rutas (`rutas.txt`), y libera toda la memoria dinámica (`liberarListaVuelos()`, `liberarCola()`).
 
 ```mermaid
 flowchart TD
-    START(["Inicio: main() en AeroGestion.c"]) --> INIT["1. Inicialización<br/>inicializar() + inicializarRedRutas()"]
-    INIT --> LOAD["2. Carga desde Disco<br/>cargarDatosBinarios (vuelos.dat, reservas.dat)<br/>cargarRutasTexto (rutas.txt)"]
-    LOAD --> MENU{"Menú Principal<br/>(Opciones 0 a 8)"}
-
-    subgraph MOD_VUELOS["Vuelos y Búsquedas (Negocioyop.h / Gestion.h)"]
-        OP1["1. cargarNuevoVuelo<br/>Inserta en lista y red de rutas + auto-guarda .dat"]
-        OP2["2. menuOrdenarYMostrarVuelos<br/>Burbuja: Código / Aerolínea / Destino / Duración"]
-        OP3["3. consultarVueloPorCodigo<br/>Búsqueda secuencial o binaria"]
+    subgraph UI["AeroGestion.c (Orquestador y Ciclo de Vida)"]
+        INI["Inicio: inicializar() + cargarDatosBinarios() + cargarRutasTexto()"]
+        M{"Menú Principal (0..8)"}
+        FIN["0. Salir: guardarDatosBinarios() + guardarRutasTexto() + liberarMemoria()"]
+        INI --> M --> FIN
     end
 
-    subgraph MOD_RES["Reservas FIFO (Negocioyop.h / Gestion.h)"]
-        OP4["4. cargarSolicitudReserva<br/>Cupo disponible → Confirmadas / Lleno → Espera + auto-guarda .dat"]
-        OP5["5. procesarCancelacionReserva<br/>Cola auxiliar por DNI + promoción FIFO + auto-guarda .dat"]
-        OP6["6. menuConsultasReservas<br/>Mostrar colas y buscar por DNI"]
+    subgraph Logica["Negocioyop.h (Lógica y Algoritmos)"]
+        ORD["2. Ordenamiento Burbuja (Código / Aerolínea / Destino / Duración)"]
+        BUS["3. Búsqueda (Secuencial / Binaria)"]
+        RES{"4. ¿Cupo disponible?"}
+        CANC["5. Cancelación por DNI (Cola Auxiliar)"]
+        CON["6. Consulta Colas / DNI"]
     end
 
-    subgraph MOD_RUTAS["Red de Rutas (topologia.h)"]
-        OP7["7. menuDeRutas<br/>Matriz de Pesos / Adyacencia / Conexiones / Agregar ruta"]
+    subgraph TADs["Gestion.h (TADs Dinámicos en RAM)"]
+        LV["Lista Enlazada de Vuelos (tNodoVuelo)"]
+        CF["Cola FIFO Confirmadas (tColaReservas)"]
+        CE["Cola FIFO Espera (tColaReservas)"]
     end
 
-    subgraph MOD_REP["Reportes (Persistencia.h)"]
-        OP8["8. corteDeControlAerolineas<br/>Corte de control leyendo vuelos.dat por aerolínea"]
+    subgraph Topo["topologia.h (Red Aérea)"]
+        G["Red Ponderada de Rutas (tRedRutas)"]
+        P["Matriz de Adyacencia y Pesos (km / min)"]
+        G --> P
     end
 
-    MENU -->|Opciones 1..3| MOD_VUELOS
-    MENU -->|Opciones 4..6| MOD_RES
-    MENU -->|Opción 7| MOD_RUTAS
-    MENU -->|Opción 8| MOD_REP
+    subgraph PersistBin["Persistencia.h (Binario y Reportes)"]
+        DAT1[("vuelos.dat")]
+        DAT2[("reservas.dat")]
+        CORTE["8. Corte de Control por Aerolínea"]
+    end
 
-    MENU -->|0. Salir| SAVE["3. Guardado Final<br/>guardarDatosBinarios (.dat)<br/>guardarRutasTexto (rutas.txt)"]
-    SAVE --> FREE["4. Liberación de Memoria<br/>liberarListaVuelos() + liberarCola()"]
-    FREE --> END(["Fin del Programa"])
+    subgraph PersistTxt["PersistenciaRutas.h (Texto Plano)"]
+        TXT1[("rutas.txt")]
+    end
+
+    M -->|1. Registrar vuelo| LV
+    M -->|1. Registrar destino| G
+    M -->|2. Ordenar y mostrar| ORD --> LV
+    M -->|3. Buscar por código| BUS --> LV
+
+    M -->|4. Solicitar reserva| RES
+    RES -- "Sí (cupo libre)" --> CF
+    RES -- "No (vuelo lleno)" --> CE
+
+    M -->|5. Cancelar reserva| CANC
+    CANC -->|Actualiza cupo| LV
+    CANC -.->|Extrae espera y promueve| CE
+    CE -.->|Promoción FIFO| CF
+
+    M -->|6. Ver colas / DNI| CON
+    CON --> CF
+    CON --> CE
+
+    M -->|7. Aeropuertos y rutas| G
+    M -->|8. Total aerolíneas| CORTE
+
+    LV <-->|Auto-guardado / Carga inicio| DAT1
+    CF <-->|Auto-guardado / Carga inicio| DAT2
+    CE <-->|Auto-guardado / Carga inicio| DAT2
+    DAT1 -->|Registra destinos| G
+    DAT1 -->|Lectura secuencial| CORTE
+    G <-->|Guarda al salir / Carga inicio| TXT1
 ```
 
 ---
