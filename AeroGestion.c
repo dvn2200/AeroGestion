@@ -53,8 +53,7 @@ int main() {
     tColaReservas colaEspera;
     tRedRutas redRutas;
     int idReserva = 1;
-
-    system("chcp 65001 > nul");
+    
     inicializar(&listaVuelos, &colaConfirmadas, &colaEspera);
     inicializarRedRutas(&redRutas);
     cargarDatosBinarios(&listaVuelos, &colaConfirmadas, &colaEspera, &redRutas);
