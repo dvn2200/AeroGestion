@@ -343,7 +343,8 @@ bool buscarPorDniEnCola(tColaReservas pCola, int pDni) {
 // Despliega opciones de criterio y muestra los vuelos ordenados
 void menuOrdenarYMostrarVuelos(tNodoVuelo *pListaVuelos) {
     int criterio;
-    printf("\nOrdenar por: 1.Codigo | 2.Aerolinea | 3.Destino | 4.Duracion: ");
+    printf("\nOrdenar por: 1.Codigo | 2.Aerolinea | 3.Destino | 4.Duracion\n");
+    printf("Seleccione modo: ");
     fflush(stdin);
     scanf("%d", &criterio);
     ordenarVuelos(pListaVuelos, criterio);
@@ -355,8 +356,7 @@ void consultarVueloPorCodigo(tNodoVuelo *pListaVuelos) {
     sstring codigo;
     int metodo;
     tNodoVuelo *buscado;
-    printf("\n1.Busqueda Secuencial\n");
-    printf("2.Busqueda Binaria\n");
+    printf("\n1.Busqueda Secuencial| 2.Busqueda Binaria\n");
     printf("Seleccione metodo: ");
     fflush(stdin);
     scanf("%d", &metodo);
