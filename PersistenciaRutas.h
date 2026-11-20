@@ -53,7 +53,7 @@ void cargarRutasTexto(tRedRutas *pRedRutas) {
 
 // Guarda las aristas activas de la red aérea en formato texto en rutas.txt
 void guardarRutasTexto(tRedRutas pRedRutas) {
-    int i, j;
+    int x, y;
     
     FILE *archivo = fopen("rutas.txt", "w");
     if (archivo == NULL) {
@@ -61,14 +61,14 @@ void guardarRutasTexto(tRedRutas pRedRutas) {
         return;
     }
 
-    for (i = 0; i < R; i++) {
-        for (j = i + 1; j < R; j++) {
-            if (pRedRutas.pesos[i][j].distanciaKm > 0) {
+    for (x = 0; x < R; x++) {
+        for (y = x + 1; y < R; y++) {
+            if (pRedRutas.pesos[x][y].distanciaKm > 0) {
                 fprintf(archivo, "%d;%s;%d;%s;%d;%d\n",
-                        i, pRedRutas.nombres[i],
-                        j, pRedRutas.nombres[j],
-                        pRedRutas.pesos[i][j].distanciaKm,
-                        pRedRutas.pesos[i][j].duracionMin);
+                        x, pRedRutas.nombres[x],
+                        y, pRedRutas.nombres[y],
+                        pRedRutas.pesos[x][y].distanciaKm,
+                        pRedRutas.pesos[x][y].duracionMin);
             }
         }
     }

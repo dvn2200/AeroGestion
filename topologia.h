@@ -136,13 +136,13 @@ void menuDeRutas(tRedRutas *pRedRutas) {
 }
 // Inicializa la matriz de aristas/pesos en cero y desactiva todos los aeropuertos
 void inicializarRedRutas(tRedRutas *pRedRutas) {
-    int i, j;
-    for (i = 0; i < R; i++) {
-        pRedRutas->vertices[i] = false;
-        strcpy(pRedRutas->nombres[i], "");
-        for (j = 0; j < R; j++) {
-            pRedRutas->pesos[i][j].distanciaKm = 0;
-            pRedRutas->pesos[i][j].duracionMin = 0;
+    int x, y;
+    for (x = 0; x < R; x++) {
+        pRedRutas->vertices[x] = false;
+        strcpy(pRedRutas->nombres[x], "");
+        for (y = 0; y < R; y++) {
+            pRedRutas->pesos[x][y].distanciaKm = 0;
+            pRedRutas->pesos[x][y].duracionMin = 0;
         }
     }
 }
@@ -219,10 +219,10 @@ bool agregarRuta(tRedRutas *pRedRutas, tAristaRuta pArista) {
 
 // Retorna el indice del vertice activo con mayor numeracion en la red de rutas
 int maximoAeropuerto(tRedRutas pRedRutas) {
-    int i, max = -1;
-    for (i = 0; i < R; i++) {
-        if (pRedRutas.vertices[i]) {
-            max = i;
+    int x, max = -1;
+    for (x = 0; x < R; x++) {
+        if (pRedRutas.vertices[x]) {
+            max = x;
         }
     }
     return max;
@@ -230,49 +230,49 @@ int maximoAeropuerto(tRedRutas pRedRutas) {
 
 // Muestra la matriz de adyacencia (1 si hay ruta directa, 0 si no existe)
 void mostrarMatrizAdyacencia(tRedRutas pRedRutas) {
-    int i, j;
+    int x, y;
     int maxV = maximoAeropuerto(pRedRutas);
     if (maxV == -1) {
         printf("La red de rutas esta vacia.\n");
         return;
     }
     printf("%s\t", TITULO_ADYACENCIA);
-    for (j = 0; j <= maxV; j++) {
-        printf("%d\t", j);
+    for (y = 0; y <= maxV; y++) {
+        printf("%d\t", y);
     }
     printf("\n");
-    for (i = 0; i <= maxV; i++) {
-        printf("%d\t", i);
-        for (j = 0; j <= maxV; j++) {
-            printf("%d\t", existeRuta(pRedRutas, i, j) ? 1 : 0);
+    for (x = 0; x <= maxV; x++) {
+        printf("%d\t", x);
+        for (y = 0; y <= maxV; y++) {
+            printf("%d\t", existeRuta(pRedRutas, x, y) ? 1 : 0);
         }
-        printf("(%s)\n", pRedRutas.nombres[i]);
+        printf("(%s)\n", pRedRutas.nombres[x]);
     }
 }
 
 // Imprime la matriz con distancias en km y duracion estimada entre aeropuertos
 void mostrarMatrizPesos(tRedRutas pRedRutas) {
-    int i, j;
+    int x, y;
     int maxV = maximoAeropuerto(pRedRutas);
     if (maxV == -1) {
         printf("La red de rutas esta vacia.\n");
         return;
     }
     printf("%s      ", TITULO_PESOS);
-    for (j = 0; j <= maxV; j++) {
-        printf("    [%2d]       ", j);
+    for (y = 0; y <= maxV; y++) {
+        printf("    [%2d]       ", y);
     }
     printf("\n");
-    for (i = 0; i <= maxV; i++) {
-        printf("[%2d]  ", i);
-        for (j = 0; j <= maxV; j++) {
-            if (existeRuta(pRedRutas, i, j)) {
-                printf("(%4dkm,%3dm)  ", pRedRutas.pesos[i][j].distanciaKm, pRedRutas.pesos[i][j].duracionMin);
+    for (x = 0; x <= maxV; x++) {
+        printf("[%2d]  ", x);
+        for (y = 0; y <= maxV; y++) {
+            if (existeRuta(pRedRutas, x, y)) {
+                printf("(%4dkm,%3dm)  ", pRedRutas.pesos[x][y].distanciaKm, pRedRutas.pesos[x][y].duracionMin);
             } else {
                 printf("  (  - ,  - )  ");
             }
         }
-        printf("%s\n", pRedRutas.nombres[i]);
+        printf("%s\n", pRedRutas.nombres[x]);
     }
 }
 
